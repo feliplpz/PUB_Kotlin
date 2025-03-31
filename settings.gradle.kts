@@ -13,6 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ProjetoICKotlinEmpty"
+rootProject.name = "pocketexperimentalphysics"
 include(":app")
- 

@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.projetoickotlinempty"
+    namespace = "br.usp.poli.pocketexperimentalphysics"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.projetoickotlinempty"
+        applicationId = "br.usp.poli.pocketexperimentalphysics"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
