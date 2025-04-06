@@ -63,7 +63,7 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="408dp"
+        android:layout_width="300dp"
         android:layout_height="393dp"
         app:srcCompat="@drawable/pocket_experimental_physics"
         app:layout_constraintLeft_toLeftOf="parent"
