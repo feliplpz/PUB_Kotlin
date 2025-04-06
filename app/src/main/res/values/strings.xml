@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Pocket Experimental Physics</string>
     <string name="logo_desc">Logo da Poli</string>
+    <string name="description">Esta aplicação transmite dados do acelerômetro para um dispositivo Bluetooth. Selecione um dispositivo pareado e inicie a transmissão.</string>
     <string name="app_title">Pocket Experimental Physics</string>
     <string name="select_server">Selecione o servidor</string>
     <string name="stop_transmission">Parar Transmissão</string>

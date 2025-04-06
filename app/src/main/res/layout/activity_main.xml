@@ -10,10 +10,10 @@
         android:id="@+id/titleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Acelerômetro Experimental"
+        android:layout_marginTop="48dp"
+        android:text="@string/app_title"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:layout_marginTop="32dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,7 +22,7 @@
         android:id="@+id/statusTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Desconectado"
+        android:text="@string/disconnected"
         android:textSize="18sp"
         android:layout_marginTop="24dp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -33,7 +33,7 @@
         android:id="@+id/connectButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Conectar"
+        android:text="@string/connect"
         android:layout_marginTop="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -43,7 +43,7 @@
         android:id="@+id/startStopButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Iniciar Transmissão"
+        android:text="@string/start_transmission"
         android:enabled="false"
         android:layout_marginTop="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -51,14 +51,22 @@
         app:layout_constraintTop_toBottomOf="@+id/connectButton" />
 
     <TextView
-        android:id="@+id/infoTextView"
+        android:id="@+id/description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Esta aplicação transmite dados do acelerômetro para um dispositivo Bluetooth. Selecione um dispositivo pareado e inicie a transmissão."
+        android:text="@string/description"
         android:layout_margin="24dp"
         android:gravity="center"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/startStopButton" />
 
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="408dp"
+        android:layout_height="393dp"
+        app:srcCompat="@drawable/pocket_experimental_physics"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/description" />
 </androidx.constraintlayout.widget.ConstraintLayout>
