@@ -9,4 +9,7 @@
     <string name="disconnect">Desconectar</string>
     <string name="connect">Conectar</string>
     <string name="disconnected">Desconectado</string>
+    <string name="connecting_at">"Conectando a %s …"</string>
+    <string name="connected_to">"Conectado a %s …"</string>
+
 </resources>

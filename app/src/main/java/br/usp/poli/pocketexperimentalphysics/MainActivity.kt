@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener,
                 bluetoothManager.disconnect()
             } else {
                 bluetoothManager.setupBluetoothConnection { socket ->
-                    Log.d("MainActivity", "Bluetooth connected successfully")
+                    Log.d("MainActivity", "Conexão de Bluetooth bem-sucedida")
                 }
             }
         }
@@ -106,11 +106,11 @@ class MainActivity : AppCompatActivity(), SensorEventListener,
         isSendingData = !isSendingData
 
         if (isSendingData) {
-            startStopButton.text = R.string.start_transmission.toString()
-            Toast.makeText(this, "Iniciando transmissão de dados", Toast.LENGTH_SHORT).show()
-        } else {
-            startStopButton.text = R.string.stop_transmission.toString()
+            startStopButton.text = getString(R.string.stop_transmission)
             Toast.makeText(this, "Transmissão de dados interrompida", Toast.LENGTH_SHORT).show()
+        } else {
+            startStopButton.text = getString(R.string.start_transmission)
+            Toast.makeText(this, "Iniciando transmissão de dados", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -184,7 +184,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener,
 
             // Conectar ao dispositivo selecionado
             bluetoothManager.connectToSelectedDevice(selectedDevice)
-            statusTextView.text = "Conectando a ${selectedDevice.name}..."
+            statusTextView.text = getString(R.string.connecting_at, selectedDevice.name)
         }
 
         dialog.show()
@@ -192,8 +192,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener,
 
     override fun onConnectionStateChanged(connected: Boolean, deviceName: String?) {
         if (connected) {
-            statusTextView.text = "Conectado a: $deviceName"
-            connectButton.text = R.string.disconnect.toString()
+            statusTextView.text = getString(R.string.connected_to, deviceName)
+            connectButton.text = getString(R.string.disconnect)
             startStopButton.isEnabled = true
 
             // Se já estava transmitindo, interrompe
@@ -201,8 +201,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener,
                 toggleDataTransmission()
             }
         } else {
-            statusTextView.text = R.string.disconnected.toString()
-            connectButton.text = R.string.connect.toString()
+            statusTextView.text = getString(R.string.disconnected)
+            connectButton.text = getString(R.string.connect)
             startStopButton.isEnabled = false
 
             // Se estava transmitindo, interrompe
