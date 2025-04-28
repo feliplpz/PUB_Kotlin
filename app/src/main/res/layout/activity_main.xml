@@ -1,72 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp"
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/titleTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:text="@string/app_title"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
         android:id="@+id/statusTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:text="@string/disconnected"
-        android:textSize="18sp"
-        android:layout_marginTop="24dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
+        android:textAlignment="center"
+        android:textSize="18sp" />
 
     <Button
         android:id="@+id/connectButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/connect"
-        android:layout_marginTop="16dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/statusTextView" />
+        android:layout_marginBottom="16dp"
+        android:text="@string/connect" />
 
     <Button
         android:id="@+id/startStopButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/start_transmission"
+        android:layout_marginBottom="24dp"
         android:enabled="false"
-        android:layout_marginTop="16dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/connectButton" />
+        android:text="@string/start_transmission" />
 
+    <!-- Seção de controle de sensores -->
     <TextView
-        android:id="@+id/description"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/description"
-        android:layout_margin="24dp"
-        android:gravity="center"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/startStopButton" />
+        android:layout_marginBottom="8dp"
+        android:text="Sensores Disponíveis"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/toggleAccelerometerButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="@string/disable_accelerometer" />
+
+    <Button
+        android:id="@+id/toggleGyroscopeButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="@string/enable_gyroscope" />
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="300dp"
-        android:layout_height="393dp"
-        app:srcCompat="@drawable/pocket_experimental_physics"
+        android:layout_width="318dp"
+        android:layout_height="351dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/description" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toBottomOf="@+id/description"
+        app:srcCompat="@drawable/pocket_experimental_physics" />
+
+</LinearLayout>

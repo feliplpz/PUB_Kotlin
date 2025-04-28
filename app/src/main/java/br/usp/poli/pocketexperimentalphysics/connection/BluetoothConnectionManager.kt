@@ -1,4 +1,4 @@
-package br.usp.poli.pocketexperimentalphysics
+package br.usp.poli.pocketexperimentalphysics.connection
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -12,18 +12,17 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import org.json.JSONObject
+import br.usp.poli.pocketexperimentalphysics.sensors.AccelerometerData
+import br.usp.poli.pocketexperimentalphysics.sensors.SensorData
 import java.io.DataOutputStream
 import java.io.IOException
 import java.io.OutputStream
 import kotlin.concurrent.thread
 
-
+/**
+ * Classe para gerenciar mensagens Bluetooth que suporta múltiplos tipos de sensores
+ */
 class BluetoothConnectionManager(private val activity: AppCompatActivity) : AutoCloseable {
-
-    data class Message(
-        val x: Double, val y: Double, val z: Double
-    )
 
     private var bluetoothSocket: BluetoothSocket? = null
     private var connectionCallback: ((BluetoothSocket) -> Unit)? = null
@@ -40,16 +39,15 @@ class BluetoothConnectionManager(private val activity: AppCompatActivity) : Auto
         return bluetoothSocket?.isConnected == true
     }
 
-    //  Define o listener de seleção de dispositivos
+    // Define o listener de seleção de dispositivos
     fun setDeviceSelectionListener(listener: DeviceSelectionListener) {
         deviceSelectionListener = listener
     }
 
-    //  Lista os dispositivos pareados
+    // Lista os dispositivos pareados
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     fun listPairedDevices(): List<BluetoothDevice> {
-        val bluetoothManager =
-            activity.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        val bluetoothManager = activity.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         val adapter = bluetoothManager.adapter
 
         if (!adapter.isEnabled) {
@@ -60,12 +58,11 @@ class BluetoothConnectionManager(private val activity: AppCompatActivity) : Auto
         return adapter.bondedDevices.toList()
     }
 
-    //  Inicia processo de busca e conexão
+    // Inicia processo de busca e conexão
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     fun setupBluetoothConnection(onConnected: (BluetoothSocket) -> Unit) {
         connectionCallback = onConnected
-        val bluetoothManager =
-            activity.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        val bluetoothManager = activity.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         bluetoothManager.adapter
 
         if (hasBluetoothPermission()) {
@@ -81,12 +78,11 @@ class BluetoothConnectionManager(private val activity: AppCompatActivity) : Auto
         }
     }
 
-    //  Conecta ao dispositivo selecionado pelo usuário
+    // Conecta ao dispositivo selecionado pelo usuário
     @SuppressLint("MissingPermission")
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     fun connectToSelectedDevice(device: BluetoothDevice) {
-        val bluetoothManager =
-            activity.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        val bluetoothManager = activity.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         val adapter = bluetoothManager.adapter
 
         thread @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN) {
@@ -152,18 +148,17 @@ class BluetoothConnectionManager(private val activity: AppCompatActivity) : Auto
         )
     }
 
-    // Envia mensagem serializada via Bluetooth
-    fun sendMessage(message: Message) {
+    fun sendSensorData(data: SensorData) {
         val socket = bluetoothSocket ?: run {
             Log.e("BluetoothManager", "No active Bluetooth connection")
             return
         }
 
         try {
-            serializeMessage(message, socket.outputStream)
-            Log.d("BluetoothManager", "Message sent successfully")
+            serializeData(data, socket.outputStream)
+            Log.d("BluetoothManager", "Data sent successfully: ${data.javaClass.simpleName}")
         } catch (e: IOException) {
-            Log.e("BluetoothManager", "Error sending message", e)
+            Log.e("BluetoothManager", "Error sending data", e)
 
             // Notifica sobre desconexão
             activity.runOnUiThread {
@@ -172,15 +167,18 @@ class BluetoothConnectionManager(private val activity: AppCompatActivity) : Auto
         }
     }
 
-    // Serializa a mensagem para JSON e envia para o output stream
-    private fun serializeMessage(message: Message, stream: OutputStream): Boolean {
-        val result = JSONObject().apply {
-            put("x", message.x)
-            put("y", message.y)
-            put("z", message.z)
-        }
+    fun sendMessage(message: Message) {
+        sendSensorData(AccelerometerData(message.x, message.y, message.z))
+    }
 
-        val bytes = result.toString().toByteArray(Charsets.UTF_8)
+    data class Message(
+        val x: Double, val y: Double, val z: Double
+    )
+
+    // Serializa dados do sensor para JSON e envia para o output stream
+    private fun serializeData(data: SensorData, stream: OutputStream): Boolean {
+        val jsonObject = data.toJson()
+        val bytes = jsonObject.toString().toByteArray(Charsets.UTF_8)
         val dataStream = DataOutputStream(stream)
 
         return if (bytes.size >= 4) {
@@ -191,12 +189,12 @@ class BluetoothConnectionManager(private val activity: AppCompatActivity) : Auto
                 true
             } catch (e: IOException) {
                 e.printStackTrace()
-                Log.e("BluetoothManager", "Message send error")
+                Log.e("BluetoothManager", "Data send error")
                 Thread.sleep(100)
                 false
             }
         } else {
-            Log.e("BluetoothManager", "Invalid message length: ${bytes.size} bytes")
+            Log.e("BluetoothManager", "Invalid data length: ${bytes.size} bytes")
             false
         }
     }
@@ -222,5 +220,4 @@ class BluetoothConnectionManager(private val activity: AppCompatActivity) : Auto
     override fun close() {
         disconnect()
     }
-
 }

@@ -3,10 +3,6 @@ package br.usp.poli.pocketexperimentalphysics
 import android.Manifest
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
-import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
-import android.hardware.SensorManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.AdapterView
@@ -18,21 +14,17 @@ import android.widget.Toast
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.sample
-import kotlinx.coroutines.launch
-import java.util.concurrent.TimeUnit
+import br.usp.poli.pocketexperimentalphysics.connection.BluetoothConnectionManager
+import br.usp.poli.pocketexperimentalphysics.sensors.AccelerometerData
+import br.usp.poli.pocketexperimentalphysics.sensors.GyroscopeData
+import br.usp.poli.pocketexperimentalphysics.sensors.SensorHandler
+import br.usp.poli.pocketexperimentalphysics.sensors.interfaces.SensorDataListener
 
-class MainActivity : AppCompatActivity(), SensorEventListener,
-    BluetoothConnectionManager.DeviceSelectionListener {
+
+class MainActivity : AppCompatActivity(), BluetoothConnectionManager.DeviceSelectionListener {
 
     private lateinit var bluetoothManager: BluetoothConnectionManager
-    private lateinit var sensorManager: SensorManager
+    private lateinit var sensorHandler: SensorHandler
 
     // Elementos da UI (Interface de Usuário)
     private lateinit var connectButton: Button
@@ -40,16 +32,13 @@ class MainActivity : AppCompatActivity(), SensorEventListener,
     private var isSendingData = false
     private lateinit var startStopButton: Button
 
-    // Cria um CoroutineScope para operações no background
-    private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    // Botões para controle dos sensores individuais
+    private lateinit var toggleAccelerometerButton: Button
+    private lateinit var toggleGyroscopeButton: Button
 
-    // Cria um flow com regulagem (throttling) para controlar os dados do sensor
-    private val sensorDataFlow = MutableSharedFlow<Triple<Double, Double, Double>>()
-
-    // Constantes para a regulagem (throttling) e taxa de amostragem
-    private val samplingPeriodUs =
-        TimeUnit.MILLISECONDS.toMicros(50) // Taxa de amostragem: intervalo de 50ms para o sensor
-    private val throttleIntervalMs = 100L // Envia dados a cada 100ms
+    // Estado de cada sensor
+    private var accelerometerEnabled = true
+    private var gyroscopeEnabled = true
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,6 +49,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener,
         connectButton = findViewById(R.id.connectButton)
         statusTextView = findViewById(R.id.statusTextView)
         startStopButton = findViewById(R.id.startStopButton)
+        toggleAccelerometerButton = findViewById(R.id.toggleAccelerometerButton)
+        toggleGyroscopeButton = findViewById(R.id.toggleGyroscopeButton)
 
         // Configura estado inicial da UI
         startStopButton.isEnabled = false
@@ -67,24 +58,46 @@ class MainActivity : AppCompatActivity(), SensorEventListener,
             toggleDataTransmission()
         }
 
-        // Initializa o administrador do sensor
-        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
-
-        // Registra o acelerômetro com a taxa de amostragem customizável
-        val accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-        if (accelerometer != null) {
-            sensorManager.registerListener(
-                this, accelerometer, samplingPeriodUs.toInt()
-            )
-            Log.d("MainActivity", "Accelerometer registered with ${samplingPeriodUs}μs sampling")
-        } else {
-            Log.e("MainActivity", "No accelerometer found on device")
-            Toast.makeText(this, "Este dispositivo não possui acelerômetro", Toast.LENGTH_LONG)
-                .show()
+        toggleAccelerometerButton.setOnClickListener {
+            accelerometerEnabled = !accelerometerEnabled
+            updateSensorToggleButtons()
         }
 
-        // Faz o setup do sensorData
-        setupSensorDataCollection()
+        toggleGyroscopeButton.setOnClickListener {
+            gyroscopeEnabled = !gyroscopeEnabled
+            updateSensorToggleButtons()
+        }
+
+        // Inicializa o gerenciador de sensores
+        sensorHandler = SensorHandler(this)
+
+        // Configura o acelerômetro com listener
+        sensorHandler.setupAccelerometer(object : SensorDataListener<AccelerometerData> {
+            override fun onDataReceived(data: AccelerometerData) {
+                if (bluetoothManager.isConnected() && isSendingData && accelerometerEnabled) {
+                    try {
+                        Log.d("MainActivity", "Enviando dado do acelerômetro: x=${data.x}, y=${data.y}, z=${data.z}")
+                        bluetoothManager.sendSensorData(data)
+                    } catch (e: Exception) {
+                        Log.e("MainActivity", "Erro ao enviar dados do acelerômetro!", e)
+                    }
+                }
+            }
+        })
+
+        // Configura o giroscópio com listener
+        sensorHandler.setupGyroscope(object : SensorDataListener<GyroscopeData> {
+            override fun onDataReceived(data: GyroscopeData) {
+                if (bluetoothManager.isConnected() && isSendingData && gyroscopeEnabled) {
+                    try {
+                        Log.d("MainActivity", "Enviando dado do giroscópio: x=${data.x}, y=${data.y}, z=${data.z}")
+                        bluetoothManager.sendSensorData(data)
+                    } catch (e: Exception) {
+                        Log.e("MainActivity", "Erro ao enviar dados do giroscópio!", e)
+                    }
+                }
+            }
+        })
 
         // Inicializa o BluetoothManager com seleção de dispositivo
         bluetoothManager = BluetoothConnectionManager(this)
@@ -100,6 +113,14 @@ class MainActivity : AppCompatActivity(), SensorEventListener,
                 }
             }
         }
+
+        // Atualiza o estado inicial dos botões
+        updateSensorToggleButtons()
+    }
+
+    private fun updateSensorToggleButtons() {
+        toggleAccelerometerButton.text = if (accelerometerEnabled) getString(R.string.disable_accelerometer) else getString(R.string.enable_accelerometer)
+        toggleGyroscopeButton.text = if (gyroscopeEnabled) getString(R.string.disable_gyroscope) else getString(R.string.enable_gyroscope)
     }
 
     private fun toggleDataTransmission() {
@@ -107,50 +128,11 @@ class MainActivity : AppCompatActivity(), SensorEventListener,
 
         if (isSendingData) {
             startStopButton.text = getString(R.string.stop_transmission)
-            Toast.makeText(this, "Transmissão de dados interrompida", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Transmissão de dados iniciada", Toast.LENGTH_SHORT).show()
         } else {
             startStopButton.text = getString(R.string.start_transmission)
-            Toast.makeText(this, "Iniciando transmissão de dados", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Transmissão de dados interrompida", Toast.LENGTH_SHORT).show()
         }
-    }
-
-    @OptIn(FlowPreview::class)
-    private fun setupSensorDataCollection() {
-        coroutineScope.launch {
-            sensorDataFlow.sample(throttleIntervalMs) //
-                .collect { (x, y, z) ->
-                    // Apenas envia dados se está conectado e a transmissão está habilitada
-                    if (bluetoothManager.isConnected() && isSendingData) {
-                        try {
-                            Log.d("MainActivity", "Enviando dado: x=$x, y=$y, z=$z")
-                            bluetoothManager.sendMessage(
-                                BluetoothConnectionManager.Message(x, y, z)
-                            )
-                        } catch (e: Exception) {
-                            Log.e("MainActivity", "Error ao enviar mensagem!", e)
-                        }
-                    }
-                }
-        }
-    }
-
-    override fun onSensorChanged(event: SensorEvent?) {
-        event?.let {
-            if (it.sensor.type == Sensor.TYPE_ACCELEROMETER) {
-                val x = it.values[0].toDouble()
-                val y = it.values[1].toDouble()
-                val z = it.values[2].toDouble()
-
-                // Emite dados do sensor de para o flow (non-blocking)
-                coroutineScope.launch {
-                    sensorDataFlow.emit(Triple(x, y, z))
-                }
-            }
-        }
-    }
-
-    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-        Log.d("MainActivity", "Acurácia do sensor mudou: ${sensor?.name}, acurácia: $accuracy")
     }
 
     // Implementação da interface DeviceSelectionListener
@@ -215,9 +197,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener,
     override fun onDestroy() {
         super.onDestroy()
         // Limpa os recursos
-        sensorManager.unregisterListener(this)
+        sensorHandler.cleanup()
         bluetoothManager.close()
-        coroutineScope.cancel() // Cancela as Coroutines
         Log.d("MainActivity", "Recursos limpos")
     }
 }
