@@ -6,7 +6,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="16dp"
+    android:background="@color/usp_yellow"
     tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="match_parent"
+        android:layout_height="188dp"
+        android:contentDescription="@string/logo_desc"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/description"
+        android:layout_gravity="center_vertical|center"
+        app:srcCompat="@drawable/pocket_experimental_physics" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="14dp" />
 
     <TextView
         android:id="@+id/statusTextView"
@@ -15,21 +31,24 @@
         android:layout_marginBottom="16dp"
         android:text="@string/disconnected"
         android:textAlignment="center"
-        android:textSize="18sp" />
+        android:textColor="@color/black"
+        android:textSize="20sp" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/connectButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        android:background="@color/usp_secondary_blue"
         android:text="@string/connect" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/startStopButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:enabled="false"
+        android:background="@color/usp_primary_blue"
         android:text="@string/start_transmission" />
 
     <!-- Seção de controle de sensores -->
@@ -37,32 +56,36 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:text="Sensores Disponíveis"
+        android:text="@string/available_sensors"
         android:textAlignment="center"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textColor="@color/black"
+        android:textSize="20sp" />
 
-    <Button
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/toggleAccelerometerButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginBottom="8dp"
-        android:text="@string/disable_accelerometer" />
+        android:text="@string/disable_accelerometer"
+        android:textSize="18sp" />
 
-    <Button
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/toggleGyroscopeButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
+        android:textSize="18sp"
         android:layout_marginBottom="8dp"
         android:text="@string/enable_gyroscope" />
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="318dp"
-        android:layout_height="351dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/description"
-        app:srcCompat="@drawable/pocket_experimental_physics" />
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="14dp" />
 
+    <Button
+        android:id="@+id/infoButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/question_mark_button"
+        android:layout_gravity="end|bottom"
+        />
 </LinearLayout>

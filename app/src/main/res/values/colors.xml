@@ -7,4 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="usp_primary_blue">#1094AB</color>
+    <color name="usp_secondary_blue">#64C4D2</color>
+    <color name="usp_yellow">#FCB421</color>
 </resources>

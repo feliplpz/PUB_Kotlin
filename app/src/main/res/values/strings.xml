@@ -11,4 +11,6 @@
     <string name="disable_accelerometer">Desativar Acelerômetro</string>
     <string name="enable_gyroscope">Ativar Giroscópio</string>
     <string name="disable_gyroscope">Desativar Giroscópio</string>
+    <string name="available_sensors">Sensores Disponíveis</string>
+    <string name="logo_desc">Logo</string>
 </resources>

@@ -37,8 +37,8 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionManager.DeviceSelec
     private lateinit var toggleGyroscopeButton: Button
 
     // Estado de cada sensor
-    private var accelerometerEnabled = true
-    private var gyroscopeEnabled = true
+    private var accelerometerEnabled = false
+    private var gyroscopeEnabled = false
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -119,8 +119,8 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionManager.DeviceSelec
     }
 
     private fun updateSensorToggleButtons() {
-        toggleAccelerometerButton.text = if (accelerometerEnabled) getString(R.string.disable_accelerometer) else getString(R.string.enable_accelerometer)
-        toggleGyroscopeButton.text = if (gyroscopeEnabled) getString(R.string.disable_gyroscope) else getString(R.string.enable_gyroscope)
+        toggleAccelerometerButton.text = getString(R.string.enable_accelerometer)
+        toggleGyroscopeButton.text = getString(R.string.enable_gyroscope)
     }
 
     private fun toggleDataTransmission() {
