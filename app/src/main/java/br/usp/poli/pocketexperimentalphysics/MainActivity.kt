@@ -2,12 +2,15 @@ package br.usp.poli.pocketexperimentalphysics
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.bluetooth.BluetoothDevice
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.Window
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
@@ -19,6 +22,9 @@ import br.usp.poli.pocketexperimentalphysics.sensors.AccelerometerData
 import br.usp.poli.pocketexperimentalphysics.sensors.GyroscopeData
 import br.usp.poli.pocketexperimentalphysics.sensors.SensorHandler
 import br.usp.poli.pocketexperimentalphysics.sensors.interfaces.SensorDataListener
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 
 class MainActivity : AppCompatActivity(), BluetoothConnectionManager.DeviceSelectionListener {
@@ -27,18 +33,24 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionManager.DeviceSelec
     private lateinit var sensorHandler: SensorHandler
 
     // Elementos da UI (Interface de Usuário)
-    private lateinit var connectButton: Button
+    private lateinit var connectButton: MaterialButton
     private lateinit var statusTextView: TextView
     private var isSendingData = false
-    private lateinit var startStopButton: Button
+    private lateinit var startStopButton: MaterialButton
 
-    // Botões para controle dos sensores individuais
-    private lateinit var toggleAccelerometerButton: Button
-    private lateinit var toggleGyroscopeButton: Button
+    // Switches para controle dos sensores individuais
+    private lateinit var toggleAccelerometerButton: SwitchMaterial
+    private lateinit var toggleGyroscopeButton: SwitchMaterial
+
+    // Botão de informações
+    private lateinit var infoButton: FloatingActionButton
+
+    // Dialog de informações
+    private var infoDialog: Dialog? = null
 
     // Estado de cada sensor
-    private var accelerometerEnabled = false
-    private var gyroscopeEnabled = false
+    private var accelerometerEnabled = true // Acelerômetro ativado por padrão
+    private var gyroscopeEnabled = false   // Giroscópio desativado por padrão
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,29 +58,77 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionManager.DeviceSelec
         setContentView(R.layout.activity_main)
 
         // Inicializa os componentes da UI
+        initializeViews()
+
+        // Configura estado inicial da UI
+        setupInitialState()
+
+        // Configura listeners
+        setupListeners()
+
+        // Inicializa o gerenciador de sensores
+        setupSensorHandlers()
+
+        // Inicializa o BluetoothManager
+        setupBluetoothManager()
+
+        // Atualiza o estado inicial dos switches
+        updateSensorSwitches()
+    }
+
+    private fun initializeViews() {
         connectButton = findViewById(R.id.connectButton)
         statusTextView = findViewById(R.id.statusTextView)
         startStopButton = findViewById(R.id.startStopButton)
         toggleAccelerometerButton = findViewById(R.id.toggleAccelerometerButton)
         toggleGyroscopeButton = findViewById(R.id.toggleGyroscopeButton)
+        infoButton = findViewById(R.id.infoButton)
+    }
 
-        // Configura estado inicial da UI
+    private fun setupInitialState() {
         startStopButton.isEnabled = false
+
+        // Configura o estado inicial dos switches
+        toggleAccelerometerButton.isChecked = accelerometerEnabled
+        toggleGyroscopeButton.isChecked = gyroscopeEnabled
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun setupListeners() {
         startStopButton.setOnClickListener {
             toggleDataTransmission()
         }
 
-        toggleAccelerometerButton.setOnClickListener {
-            accelerometerEnabled = !accelerometerEnabled
-            updateSensorToggleButtons()
+        toggleAccelerometerButton.setOnCheckedChangeListener { _, isChecked ->
+            accelerometerEnabled = isChecked
+            updateSensorSwitches()
+            Log.d("MainActivity", "Acelerômetro ${if (isChecked) "ativado" else "desativado"}")
         }
 
-        toggleGyroscopeButton.setOnClickListener {
-            gyroscopeEnabled = !gyroscopeEnabled
-            updateSensorToggleButtons()
+        toggleGyroscopeButton.setOnCheckedChangeListener { _, isChecked ->
+            gyroscopeEnabled = isChecked
+            updateSensorSwitches()
+            Log.d("MainActivity", "Giroscópio ${if (isChecked) "ativado" else "desativado"}")
         }
 
-        // Inicializa o gerenciador de sensores
+        // Configura o botão de informações
+        infoButton.setOnClickListener {
+            showInfoDialog()
+        }
+
+        // Configura o botão de conexão
+        connectButton.setOnClickListener {
+            if (bluetoothManager.isConnected()) {
+                bluetoothManager.disconnect()
+            } else {
+                bluetoothManager.setupBluetoothConnection { socket ->
+                    Log.d("MainActivity", "Conexão de Bluetooth bem-sucedida")
+                }
+            }
+        }
+    }
+
+    private fun setupSensorHandlers() {
         sensorHandler = SensorHandler(this)
 
         // Configura o acelerômetro com listener
@@ -76,7 +136,10 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionManager.DeviceSelec
             override fun onDataReceived(data: AccelerometerData) {
                 if (bluetoothManager.isConnected() && isSendingData && accelerometerEnabled) {
                     try {
-                        Log.d("MainActivity", "Enviando dado do acelerômetro: x=${data.x}, y=${data.y}, z=${data.z}")
+                        Log.d(
+                            "MainActivity",
+                            "Enviando dado do acelerômetro: x=${data.x}, y=${data.y}, z=${data.z}"
+                        )
                         bluetoothManager.sendSensorData(data)
                     } catch (e: Exception) {
                         Log.e("MainActivity", "Erro ao enviar dados do acelerômetro!", e)
@@ -90,7 +153,10 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionManager.DeviceSelec
             override fun onDataReceived(data: GyroscopeData) {
                 if (bluetoothManager.isConnected() && isSendingData && gyroscopeEnabled) {
                     try {
-                        Log.d("MainActivity", "Enviando dado do giroscópio: x=${data.x}, y=${data.y}, z=${data.z}")
+                        Log.d(
+                            "MainActivity",
+                            "Enviando dado do giroscópio: x=${data.x}, y=${data.y}, z=${data.z}"
+                        )
                         bluetoothManager.sendSensorData(data)
                     } catch (e: Exception) {
                         Log.e("MainActivity", "Erro ao enviar dados do giroscópio!", e)
@@ -98,29 +164,27 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionManager.DeviceSelec
                 }
             }
         })
-
-        // Inicializa o BluetoothManager com seleção de dispositivo
-        bluetoothManager = BluetoothConnectionManager(this)
-        bluetoothManager.setDeviceSelectionListener(this)
-
-        // Configura o botão de conexão
-        connectButton.setOnClickListener {
-            if (bluetoothManager.isConnected()) {
-                bluetoothManager.disconnect()
-            } else {
-                bluetoothManager.setupBluetoothConnection { socket ->
-                    Log.d("MainActivity", "Conexão de Bluetooth bem-sucedida")
-                }
-            }
-        }
-
-        // Atualiza o estado inicial dos botões
-        updateSensorToggleButtons()
     }
 
-    private fun updateSensorToggleButtons() {
-        toggleAccelerometerButton.text = getString(R.string.enable_accelerometer)
-        toggleGyroscopeButton.text = getString(R.string.enable_gyroscope)
+    private fun setupBluetoothManager() {
+        bluetoothManager = BluetoothConnectionManager(this)
+        bluetoothManager.setDeviceSelectionListener(this)
+    }
+
+    private fun updateSensorSwitches() {
+        // Atualiza o ícone do botão de start/stop baseado nos sensores ativos
+        val hasActiveSensors = accelerometerEnabled || gyroscopeEnabled
+
+        if (hasActiveSensors && !isSendingData) {
+            startStopButton.setIconResource(R.drawable.ic_play)
+        } else if (isSendingData) {
+            startStopButton.setIconResource(R.drawable.ic_pause)
+        }
+
+        // Opcional: Desabilitar o botão se nenhum sensor estiver ativo
+        if (bluetoothManager.isConnected()) {
+            startStopButton.isEnabled = hasActiveSensors
+        }
     }
 
     private fun toggleDataTransmission() {
@@ -128,11 +192,67 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionManager.DeviceSelec
 
         if (isSendingData) {
             startStopButton.text = getString(R.string.stop_transmission)
+            startStopButton.setIconResource(R.drawable.ic_pause)
             Toast.makeText(this, "Transmissão de dados iniciada", Toast.LENGTH_SHORT).show()
         } else {
             startStopButton.text = getString(R.string.start_transmission)
+            startStopButton.setIconResource(R.drawable.ic_play)
             Toast.makeText(this, "Transmissão de dados interrompida", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    /**
+     * Mostra o dialog de informações sobre como usar o aplicativo
+     */
+    private fun showInfoDialog() {
+        // Se o dialog já está sendo exibido, não cria outro
+        if (infoDialog?.isShowing == true) {
+            return
+        }
+
+        // Cria o dialog
+        infoDialog = Dialog(this)
+        infoDialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
+
+        // Infla o layout customizado
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_info, null)
+        infoDialog?.setContentView(dialogView)
+
+        // Configura o dialog para ser cancelável
+        infoDialog?.setCancelable(true)
+        infoDialog?.setCanceledOnTouchOutside(true)
+
+        // Configura os botões do dialog
+        val closeButton = dialogView.findViewById<ImageButton>(R.id.closeButton)
+        val gotItButton = dialogView.findViewById<MaterialButton>(R.id.gotItButton)
+
+        closeButton.setOnClickListener {
+            dismissInfoDialog()
+        }
+
+        gotItButton.setOnClickListener {
+            dismissInfoDialog()
+        }
+
+        // Configura o tamanho do dialog
+        infoDialog?.window?.setLayout(
+            (resources.displayMetrics.widthPixels * 0.9).toInt(),
+            android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+
+        // Mostra o dialog
+        infoDialog?.show()
+
+        Log.d("MainActivity", "Dialog de informações exibido")
+    }
+
+    /**
+     * Fecha o dialog de informações
+     */
+    private fun dismissInfoDialog() {
+        infoDialog?.dismiss()
+        infoDialog = null
+        Log.d("MainActivity", "Dialog de informações fechado")
     }
 
     // Implementação da interface DeviceSelectionListener
@@ -154,7 +274,9 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionManager.DeviceSelec
         deviceListView.adapter = adapter
 
         val dialog =
-            AlertDialog.Builder(this).setTitle("Selecione um dispositivo").setView(deviceListView)
+            AlertDialog.Builder(this)
+                .setTitle("Selecione um dispositivo")
+                .setView(deviceListView)
                 .setNegativeButton("Cancelar") { dialog, _ ->
                     dialog.dismiss()
                 }.create()
@@ -176,7 +298,11 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionManager.DeviceSelec
         if (connected) {
             statusTextView.text = getString(R.string.connected_to, deviceName)
             connectButton.text = getString(R.string.disconnect)
-            startStopButton.isEnabled = true
+            connectButton.setIconResource(R.drawable.ic_bluetooth)
+
+            // Habilita o botão apenas se há sensores ativos
+            val hasActiveSensors = accelerometerEnabled || gyroscopeEnabled
+            startStopButton.isEnabled = hasActiveSensors
 
             // Se já estava transmitindo, interrompe
             if (isSendingData) {
@@ -185,6 +311,7 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionManager.DeviceSelec
         } else {
             statusTextView.text = getString(R.string.disconnected)
             connectButton.text = getString(R.string.connect)
+            connectButton.setIconResource(R.drawable.ic_bluetooth)
             startStopButton.isEnabled = false
 
             // Se estava transmitindo, interrompe
@@ -196,9 +323,19 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionManager.DeviceSelec
 
     override fun onDestroy() {
         super.onDestroy()
+
+        // Fecha o dialog se estiver aberto
+        dismissInfoDialog()
+
         // Limpa os recursos
         sensorHandler.cleanup()
         bluetoothManager.close()
         Log.d("MainActivity", "Recursos limpos")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // Opcional: Fechar o dialog ao pausar a activity
+        dismissInfoDialog()
     }
 }

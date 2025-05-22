@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/dialog_background">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="16dp">
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_info"
+            android:layout_marginEnd="12dp"
+            app:tint="@color/usp_primary_blue" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Como usar o aplicativo"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/closeButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_close"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Fechar"
+            app:tint="@android:color/darker_gray" />
+
+    </LinearLayout>
+
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Scroll para o conteúdo -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:maxHeight="400dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Seção 1: Preparação -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="1. Preparação"
+                android:textColor="@color/usp_primary_blue"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Certifique-se de que o Bluetooth esteja ativado no seu dispositivo\n• Tenha o servidor Bluetooth rodando no computador\n• Mantenha os dispositivos próximos durante a conexão"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:lineSpacingExtra="2dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Seção 2: Conexão -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="2. Conectando ao Servidor"
+                android:textColor="@color/usp_primary_blue"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Toque no botão 'Conectar' para buscar o servidor\n• Aguarde até que o status mude para 'Conectado'\n• Se a conexão falhar, verifique se o servidor está rodando"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:lineSpacingExtra="2dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Seção 3: Sensores -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="3. Configurando Sensores"
+                android:textColor="@color/usp_primary_blue"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Acelerômetro: Ativado por padrão, mede aceleração nos eixos X, Y e Z\n• Giroscópio: Desativado por padrão, mede velocidade angular\n• Use os interruptores para ativar/desativar cada sensor"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:lineSpacingExtra="2dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Seção 4: Transmissão -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="4. Iniciando a Transmissão"
+                android:textColor="@color/usp_primary_blue"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Após conectar, toque em 'Iniciar Transmissão'\n• Os dados dos sensores serão enviados em tempo real\n• Para parar, toque em 'Parar Transmissão'\n• Os dados são salvos automaticamente no servidor"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:lineSpacingExtra="2dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Seção 5: Dicas -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="5. Dicas Importantes"
+                android:textColor="@color/usp_primary_blue"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Mantenha o aplicativo em primeiro plano durante a transmissão\n• Evite movimentos bruscos durante experimentos precisos\n• Para visualizar os dados, acesse a interface web do servidor\n• Em caso de problemas, reinicie a conexão"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:lineSpacingExtra="2dp"
+                android:layout_marginBottom="8dp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- Botão de ação -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/gotItButton"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/modal_close_button"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        app:backgroundTint="@color/usp_primary_blue"
+        app:cornerRadius="8dp"
+        android:theme="@style/Theme.MaterialComponents.Light"/>
+
+</LinearLayout>

@@ -13,4 +13,5 @@
     <string name="disable_gyroscope">Desativar Giroscópio</string>
     <string name="available_sensors">Sensores Disponíveis</string>
     <string name="logo_desc">Logo</string>
+    <string name="modal_close_button">Entendi!</string>
 </resources>
