@@ -28,6 +28,7 @@ class SensorHandler(private val activity: AppCompatActivity) {
     // Flows para os diferentes tipos de sensores
     private val accelerometerFlow = MutableSharedFlow<AccelerometerData>()
     private val gyroscopeFlow = MutableSharedFlow<GyroscopeData>()
+    private val magnetometerFlow = MutableSharedFlow<MagnetometerData>()
 
     // Constantes para configuração de sensores
     private val samplingPeriodUs = TimeUnit.MILLISECONDS.toMicros(50) // 50ms
@@ -110,6 +111,43 @@ class SensorHandler(private val activity: AppCompatActivity) {
             }
         } else {
             Log.e("SensorHandler", "No gyroscope found on device")
+        }
+    }
+
+    @OptIn(FlowPreview::class)
+    fun setupMagnetometer(listener: SensorDataListener<MagnetometerData>) {
+        val magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
+
+        if (magnetometer != null) {
+            val magnetometerListener = createSensorEventListener { event ->
+                val x = event.values[0].toDouble()
+                val y = event.values[1].toDouble()
+                val z = event.values[2].toDouble()
+
+                coroutineScope.launch {
+                    magnetometerFlow.emit(MagnetometerData(x, y, z))
+                }
+            }
+
+            sensorManager.registerListener(
+                magnetometerListener,
+                magnetometer,
+                samplingPeriodUs.toInt()
+            )
+
+            registeredSensors[Sensor.TYPE_MAGNETIC_FIELD] = magnetometerListener
+
+            Log.d("SensorHandler", "Magnetometer registered with ${samplingPeriodUs}μs sampling")
+
+            // Configura o flow para emitir dados com regulagem (throttling)
+            coroutineScope.launch {
+                magnetometerFlow.sample(throttleIntervalMs)
+                    .collect { data ->
+                        listener.onDataReceived(data)
+                    }
+            }
+        } else {
+            Log.e("SensorHandler", "No Magnetometer found on device")
         }
     }
 

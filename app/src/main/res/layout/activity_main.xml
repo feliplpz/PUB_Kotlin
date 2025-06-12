@@ -231,6 +231,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp"
                         android:background="@drawable/sensor_item_background"
                         android:padding="16dp">
 
@@ -274,6 +275,57 @@
                             android:theme="@style/Theme.MaterialComponents.Light"/>
 
                     </LinearLayout>
+
+                    <!-- Magnetometer Switch -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:background="@drawable/sensor_item_background"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_magnetometer"
+                            android:layout_marginEnd="16dp"
+                            app:tint="@color/usp_primary_blue" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Magnetômetro"
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Mede campo magnético nos eixos X, Y e Z"
+                                android:textColor="@android:color/darker_gray"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/toggleMagnetometerButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="false"
+                            app:thumbTint="@color/usp_primary_blue"
+                            app:trackTint="@color/usp_secondary_blue"
+                            android:theme="@style/Theme.MaterialComponents.Light"/>
+
+                    </LinearLayout>
+
 
                 </LinearLayout>
 

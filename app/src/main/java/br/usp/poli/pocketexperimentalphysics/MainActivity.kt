@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity
 import br.usp.poli.pocketexperimentalphysics.connection.BluetoothConnectionManager
 import br.usp.poli.pocketexperimentalphysics.sensors.AccelerometerData
 import br.usp.poli.pocketexperimentalphysics.sensors.GyroscopeData
+import br.usp.poli.pocketexperimentalphysics.sensors.MagnetometerData
 import br.usp.poli.pocketexperimentalphysics.sensors.SensorHandler
 import br.usp.poli.pocketexperimentalphysics.sensors.interfaces.SensorDataListener
 import com.google.android.material.button.MaterialButton
@@ -41,6 +42,7 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionManager.DeviceSelec
     // Switches para controle dos sensores individuais
     private lateinit var toggleAccelerometerButton: SwitchMaterial
     private lateinit var toggleGyroscopeButton: SwitchMaterial
+    private lateinit var toggleMagnetometerButton: SwitchMaterial
 
     // Botão de informações
     private lateinit var infoButton: FloatingActionButton
@@ -51,6 +53,7 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionManager.DeviceSelec
     // Estado de cada sensor
     private var accelerometerEnabled = true // Acelerômetro ativado por padrão
     private var gyroscopeEnabled = false   // Giroscópio desativado por padrão
+    private var magnetometerEnabled = false // Giroscópio desativado por padrão
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,6 +85,7 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionManager.DeviceSelec
         startStopButton = findViewById(R.id.startStopButton)
         toggleAccelerometerButton = findViewById(R.id.toggleAccelerometerButton)
         toggleGyroscopeButton = findViewById(R.id.toggleGyroscopeButton)
+        toggleMagnetometerButton = findViewById(R.id.toggleMagnetometerButton)
         infoButton = findViewById(R.id.infoButton)
     }
 
@@ -91,6 +95,8 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionManager.DeviceSelec
         // Configura o estado inicial dos switches
         toggleAccelerometerButton.isChecked = accelerometerEnabled
         toggleGyroscopeButton.isChecked = gyroscopeEnabled
+        toggleMagnetometerButton.isChecked = magnetometerEnabled
+
     }
 
     @SuppressLint("MissingPermission")
@@ -109,6 +115,12 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionManager.DeviceSelec
             gyroscopeEnabled = isChecked
             updateSensorSwitches()
             Log.d("MainActivity", "Giroscópio ${if (isChecked) "ativado" else "desativado"}")
+        }
+
+        toggleMagnetometerButton.setOnCheckedChangeListener { _, isChecked ->
+            magnetometerEnabled = isChecked
+            updateSensorSwitches()
+            Log.d("MainActivity", "Magnetômetro ${if (isChecked) "ativado" else "desativado"}")
         }
 
         // Configura o botão de informações
@@ -164,6 +176,18 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionManager.DeviceSelec
                 }
             }
         })
+        sensorHandler.setupMagnetometer(object : SensorDataListener<MagnetometerData> {
+            override fun onDataReceived(data: MagnetometerData) {
+                if (bluetoothManager.isConnected() && isSendingData && magnetometerEnabled) {
+                    try {
+                        Log.d("MainActivity", "Enviando dado do magnetômetro: x=${data.x}, y=${data.y}, z=${data.z}")
+                        bluetoothManager.sendSensorData(data)
+                    } catch (e: Exception) {
+                        Log.e("MainActivity", "Erro ao enviar dados do magnetômetro!", e)
+                    }
+                }
+            }
+        })
     }
 
     private fun setupBluetoothManager() {
@@ -173,7 +197,7 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionManager.DeviceSelec
 
     private fun updateSensorSwitches() {
         // Atualiza o ícone do botão de start/stop baseado nos sensores ativos
-        val hasActiveSensors = accelerometerEnabled || gyroscopeEnabled
+        val hasActiveSensors = accelerometerEnabled || gyroscopeEnabled || magnetometerEnabled
 
         if (hasActiveSensors && !isSendingData) {
             startStopButton.setIconResource(R.drawable.ic_play)
@@ -301,7 +325,7 @@ class MainActivity : AppCompatActivity(), BluetoothConnectionManager.DeviceSelec
             connectButton.setIconResource(R.drawable.ic_bluetooth)
 
             // Habilita o botão apenas se há sensores ativos
-            val hasActiveSensors = accelerometerEnabled || gyroscopeEnabled
+            val hasActiveSensors = accelerometerEnabled || gyroscopeEnabled || magnetometerEnabled
             startStopButton.isEnabled = hasActiveSensors
 
             // Se já estava transmitindo, interrompe
