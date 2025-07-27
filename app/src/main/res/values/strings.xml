@@ -1,17 +1,17 @@
 <resources>
     <string name="app_name">Pocket Experimental Physics</string>
-    <string name="connect">Conectar</string>
-    <string name="disconnect">Desconectar</string>
-    <string name="connecting_at">Conectando a %1$s...</string>
-    <string name="connected_to">Conectado a %1$s</string>
-    <string name="disconnected">Desconectado</string>
-    <string name="start_transmission">Iniciar Transmissão</string>
-    <string name="stop_transmission">Parar Transmissão</string>
-    <string name="enable_accelerometer">Ativar Acelerômetro</string>
-    <string name="disable_accelerometer">Desativar Acelerômetro</string>
-    <string name="enable_gyroscope">Ativar Giroscópio</string>
-    <string name="disable_gyroscope">Desativar Giroscópio</string>
-    <string name="available_sensors">Sensores Disponíveis</string>
+    <string name="connect">Connect</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="connecting_at">Connecting to %1$s...</string>
+    <string name="connected_to">Connected to %1$s</string>
+    <string name="disconnected">Disconnected </string>
+    <string name="start_transmission">Start Transmission / Iniciar Transmissão</string>
+    <string name="stop_transmission">Stop Transmission / Parar Transmissão</string>
+    <string name="enable_accelerometer">Enable Accelerometer / Ativar Acelerômetro</string>
+    <string name="disable_accelerometer">Disable Accelerometer / Desativar Acelerômetro</string>
+    <string name="enable_gyroscope">Enable Gyroscope / Ativar Giroscópio</string>
+    <string name="disable_gyroscope">Disable Gyroscope / Desativar Giroscópio</string>
+    <string name="available_sensors">Available Sensors / Sensores Disponíveis</string>
     <string name="logo_desc">Logo</string>
-    <string name="modal_close_button">Entendi!</string>
+    <string name="modal_close_button">Got it! / Entendi!</string>
 </resources>

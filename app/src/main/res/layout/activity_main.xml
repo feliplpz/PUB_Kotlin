@@ -18,7 +18,7 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <!-- Header com logo -->
+            <!-- Header with logo -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Status da Conexão"
+                        android:text="Connection Status"
                         android:textColor="@color/black"
                         android:textSize="16sp"
                         android:textStyle="bold"
@@ -112,7 +112,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Controles"
+                        android:text="Controls"
                         android:textColor="@color/black"
                         android:textSize="16sp"
                         android:textStyle="bold"
@@ -200,7 +200,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Acelerômetro"
+                                android:text="Accelerometer / Acelerômetro"
                                 android:textColor="@color/black"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
@@ -208,7 +208,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Mede aceleração nos eixos X, Y e Z"
+                                android:text="Measures acceleration on X, Y, Z axes / Mede aceleração nos eixos X, Y, Z"
                                 android:textColor="@android:color/darker_gray"
                                 android:textSize="12sp" />
 
@@ -251,7 +251,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Giroscópio"
+                                android:text="Gyroscope / Giroscópio"
                                 android:textColor="@color/black"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
@@ -259,7 +259,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Mede velocidade angular nos eixos X, Y e Z"
+                                android:text="Measures angular velocity on X, Y, Z axes / Mede velocidade angular nos eixos X, Y, Z"
                                 android:textColor="@android:color/darker_gray"
                                 android:textSize="12sp" />
 
@@ -301,7 +301,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Magnetômetro"
+                                android:text="Magnetometer / Magnetômetro"
                                 android:textColor="@color/black"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
@@ -309,7 +309,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Mede campo magnético nos eixos X, Y e Z"
+                                android:text="Measures magnetic field on X, Y, Z axes / Mede campo magnético nos eixos X, Y, Z"
                                 android:textColor="@android:color/darker_gray"
                                 android:textSize="12sp" />
 
@@ -335,7 +335,7 @@
 
     </ScrollView>
 
-    <!-- Floating Action Button para informações -->
+    <!-- Floating Action Button for information -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/infoButton"
         android:layout_width="wrap_content"

@@ -3,7 +3,10 @@ package br.usp.poli.pocketexperimentalphysics.sensors
 import org.json.JSONObject
 
 /**
- * Dados do giroscópio
+ * Represents gyroscope sensor data.
+ * @param x Angular velocity around X-axis (rad/s)
+ * @param y Angular velocity around Y-axis (rad/s)
+ * @param z Angular velocity around Z-axis (rad/s)
  */
 data class GyroscopeData(val x: Double, val y: Double, val z: Double) : SensorData() {
     override fun toJson(): JSONObject {

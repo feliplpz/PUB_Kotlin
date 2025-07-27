@@ -20,14 +20,16 @@ import java.io.OutputStream
 import kotlin.concurrent.thread
 
 /**
- * Classe para gerenciar mensagens Bluetooth que suporta múltiplos tipos de sensores
+ * Manages Bluetooth messaging with support for multiple sensor types.
  */
 class BluetoothConnectionManager(private val activity: AppCompatActivity) : AutoCloseable {
 
     private var bluetoothSocket: BluetoothSocket? = null
     private var connectionCallback: ((BluetoothSocket) -> Unit)? = null
 
-    // Interface para notificar a UI sobre dispositivos disponíveis
+    /**
+     * Interface for notifying UI about available devices and connection state changes.
+     */
     interface DeviceSelectionListener {
         fun onDevicesAvailable(devices: List<BluetoothDevice>)
         fun onConnectionStateChanged(connected: Boolean, deviceName: String?)
@@ -39,12 +41,10 @@ class BluetoothConnectionManager(private val activity: AppCompatActivity) : Auto
         return bluetoothSocket?.isConnected == true
     }
 
-    // Define o listener de seleção de dispositivos
     fun setDeviceSelectionListener(listener: DeviceSelectionListener) {
         deviceSelectionListener = listener
     }
 
-    // Lista os dispositivos pareados
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     fun listPairedDevices(): List<BluetoothDevice> {
         val bluetoothManager = activity.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
@@ -58,7 +58,6 @@ class BluetoothConnectionManager(private val activity: AppCompatActivity) : Auto
         return adapter.bondedDevices.toList()
     }
 
-    // Inicia processo de busca e conexão
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     fun setupBluetoothConnection(onConnected: (BluetoothSocket) -> Unit) {
         connectionCallback = onConnected
@@ -68,7 +67,6 @@ class BluetoothConnectionManager(private val activity: AppCompatActivity) : Auto
         if (hasBluetoothPermission()) {
             Log.d("BluetoothManager", "Bluetooth permission granted")
 
-            // Em vez de conectar diretamente, notificamos a UI sobre dispositivos disponíveis
             val pairedDevices = listPairedDevices()
             deviceSelectionListener?.onDevicesAvailable(pairedDevices)
 
@@ -78,7 +76,6 @@ class BluetoothConnectionManager(private val activity: AppCompatActivity) : Auto
         }
     }
 
-    // Conecta ao dispositivo selecionado pelo usuário
     @SuppressLint("MissingPermission")
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     fun connectToSelectedDevice(device: BluetoothDevice) {
@@ -96,7 +93,6 @@ class BluetoothConnectionManager(private val activity: AppCompatActivity) : Auto
                 socket.connect()
                 bluetoothSocket = socket
 
-                // Notifica sobre mudança de estado de conexão
                 activity.runOnUiThread {
                     deviceSelectionListener?.onConnectionStateChanged(true, device.name)
                     connectionCallback?.invoke(socket)
@@ -112,7 +108,6 @@ class BluetoothConnectionManager(private val activity: AppCompatActivity) : Auto
         }
     }
 
-    // Lida com validações de permissão
     private fun hasBluetoothPermission(): Boolean {
         return ActivityCompat.checkSelfPermission(
             activity, Manifest.permission.BLUETOOTH_SCAN
@@ -121,7 +116,6 @@ class BluetoothConnectionManager(private val activity: AppCompatActivity) : Auto
         ) == PackageManager.PERMISSION_GRANTED
     }
 
-    // Requisita permissões de Bluetooth
     @SuppressLint("MissingPermission")
     private val permissionLauncher =
         activity.registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) @RequiresPermission(
@@ -130,7 +124,6 @@ class BluetoothConnectionManager(private val activity: AppCompatActivity) : Auto
             if (permissions.entries.all { it.value }) {
                 Log.d("BluetoothManager", "Permissions granted")
 
-                // Notificar sobre dispositivos disponíveis após obter permissões
                 val pairedDevices = listPairedDevices()
                 deviceSelectionListener?.onDevicesAvailable(pairedDevices)
 
@@ -139,7 +132,6 @@ class BluetoothConnectionManager(private val activity: AppCompatActivity) : Auto
             }
         }
 
-    // Requisita permissões de Bluetooth
     private fun requestBluetoothPermission() {
         permissionLauncher.launch(
             arrayOf(
@@ -160,7 +152,6 @@ class BluetoothConnectionManager(private val activity: AppCompatActivity) : Auto
         } catch (e: IOException) {
             Log.e("BluetoothManager", "Error sending data", e)
 
-            // Notifica sobre desconexão
             activity.runOnUiThread {
                 deviceSelectionListener?.onConnectionStateChanged(false, null)
             }
@@ -175,7 +166,6 @@ class BluetoothConnectionManager(private val activity: AppCompatActivity) : Auto
         val x: Double, val y: Double, val z: Double
     )
 
-    // Serializa dados do sensor para JSON e envia para o output stream
     private fun serializeData(data: SensorData, stream: OutputStream): Boolean {
         val jsonObject = data.toJson()
         val bytes = jsonObject.toString().toByteArray(Charsets.UTF_8)
@@ -199,13 +189,11 @@ class BluetoothConnectionManager(private val activity: AppCompatActivity) : Auto
         }
     }
 
-    // Desconecta do dispositivo atual
     fun disconnect() {
         try {
             bluetoothSocket?.close()
             bluetoothSocket = null
 
-            // Notifica sobre desconexão
             activity.runOnUiThread {
                 deviceSelectionListener?.onConnectionStateChanged(false, null)
             }
@@ -216,7 +204,6 @@ class BluetoothConnectionManager(private val activity: AppCompatActivity) : Auto
         }
     }
 
-    // Fecha o socket do Bluetooth
     override fun close() {
         disconnect()
     }

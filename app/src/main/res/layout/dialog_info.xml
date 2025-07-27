@@ -26,7 +26,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Como usar o aplicativo"
+            android:text="How to Use / Como Usar"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -37,7 +37,7 @@
             android:layout_height="32dp"
             android:src="@drawable/ic_close"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Fechar"
+            android:contentDescription="Close / Fechar"
             app:tint="@android:color/darker_gray" />
 
     </LinearLayout>
@@ -49,17 +49,133 @@
         android:background="@android:color/darker_gray"
         android:layout_marginBottom="16dp" />
 
-    <!-- Scroll para o conteúdo -->
+    <!-- Scroll for content -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:maxHeight="400dp">
+        android:maxHeight="500dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <!-- English Instructions -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="🇺🇸 ENGLISH"
+                android:textColor="@color/usp_primary_blue"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Section 1: Setup -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="1. Setup"
+                android:textColor="@color/usp_primary_blue"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Ensure Bluetooth is enabled on your device\n• Have the Bluetooth server running on computer\n• Keep devices close during connection"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:lineSpacingExtra="2dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Section 2: Connection -->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="2. Connecting to Server"
+                android:textColor="@color/usp_primary_blue"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Tap 'Connect' button to search for server\n• Wait until status changes to 'Connected'\n• If connection fails, verify server is running"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:lineSpacingExtra="2dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Section 3: Sensors -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="3. Configuring Sensors"
+                android:textColor="@color/usp_primary_blue"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Accelerometer: Enabled by default, measures acceleration on X, Y, Z axes\n• Gyroscope: Disabled by default, measures angular velocity\n• Magnetometer: Measures magnetic field strength\n• Use switches to enable/disable each sensor"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:lineSpacingExtra="2dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Section 4: Transmission -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="4. Starting Transmission"
+                android:textColor="@color/usp_primary_blue"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• After connecting, tap 'Start Transmission'\n• Sensor data will be sent in real-time\n• To stop, tap 'Stop Transmission'\n• Data is automatically saved on server"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:lineSpacingExtra="2dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Section 5: Tips -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="5. Important Tips"
+                android:textColor="@color/usp_primary_blue"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Keep app in foreground during transmission\n• Avoid sudden movements during precise experiments\n• Access web interface to visualize data\n• Restart connection if problems occur"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:lineSpacingExtra="2dp"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Portuguese Instructions -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="🇧🇷 PORTUGUÊS"
+                android:textColor="@color/usp_primary_blue"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp" />
 
             <!-- Seção 1: Preparação -->
             <TextView
@@ -112,7 +228,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="• Acelerômetro: Ativado por padrão, mede aceleração nos eixos X, Y e Z\n• Giroscópio: Desativado por padrão, mede velocidade angular\n• Use os interruptores para ativar/desativar cada sensor"
+                android:text="• Acelerômetro: Ativado por padrão, mede aceleração nos eixos X, Y e Z\n• Giroscópio: Desativado por padrão, mede velocidade angular\n• Magnetômetro: Mede intensidade do campo magnético\n• Use os interruptores para ativar/desativar cada sensor"
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 android:lineSpacingExtra="2dp"
@@ -154,19 +270,44 @@
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 android:lineSpacingExtra="2dp"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Warning Section -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/usp_primary_blue"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="⚠️ SAFETY WARNING / AVISO DE SEGURANÇA"
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="🇺🇸 We do not take responsibility for any damage to your device caused by experimental use. Avoid exposure to strong magnetic fields, extreme temperatures, or physical impacts that may harm your phone's sensors or functionality. Use at your own risk.\n\n🇧🇷 Não nos responsabilizamos por danos ao seu dispositivo causados por uso experimental. Evite exposição a campos magnéticos intensos, temperaturas extremas ou impactos físicos que possam prejudicar os sensores ou funcionalidade do telefone. Use por sua conta e risco."
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="12sp"
+                android:lineSpacingExtra="2dp"
                 android:layout_marginBottom="8dp" />
 
         </LinearLayout>
 
     </ScrollView>
 
-    <!-- Botão de ação -->
+    <!-- Action Button -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/gotItButton"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginTop="16dp"
-        android:text="@string/modal_close_button"
+        android:text="Got it / Entendi"
         android:textAllCaps="false"
         android:textSize="16sp"
         app:backgroundTint="@color/usp_primary_blue"

@@ -1,23 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Cores bpásicas -->
+    <!-- Basic Colors -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <!-- Cores USP -->
+
+    <!-- USP Brand Colors -->
     <color name="usp_primary_blue">#1094AB</color>
     <color name="usp_secondary_blue">#64C4D2</color>
     <color name="usp_yellow">#FCB421</color>
-    <!-- Cores para status -->
+
+    <!-- Status Colors -->
     <color name="status_background_color">#F5F5F5</color>
     <color name="status_border_color">#E0E0E0</color>
-    <!-- Cores para itens de sensor -->
+
+    <!-- Sensor Item Colors -->
     <color name="sensor_item_background">#FAFAFA</color>
     <color name="sensor_item_border">#E8E8E8</color>
-    <!-- Cores de estado -->
+
+    <!-- Connection State Colors -->
     <color name="connected_color">#4CAF50</color>
     <color name="disconnected_color">#F44336</color>
     <color name="transmitting_color">#FF9800</color>
-    <!-- Cores de texto -->
+
+    <!-- Text Colors -->
     <color name="text_primary">#212121</color>
     <color name="text_secondary">#757575</color>
     <color name="text_hint">#BDBDBD</color>

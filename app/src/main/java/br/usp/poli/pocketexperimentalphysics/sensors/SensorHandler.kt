@@ -18,25 +18,20 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 /**
- * Gerenciador de sensores abstraído para suportar múltiplos tipos de sensores
+ * Abstracted sensor manager to support multiple sensor types.
  */
 class SensorHandler(private val activity: AppCompatActivity) {
     private val sensorManager: SensorManager = activity.getSystemService(AppCompatActivity.SENSOR_SERVICE) as SensorManager
     private val registeredSensors = mutableMapOf<Int, SensorEventListener>()
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-    // Flows para os diferentes tipos de sensores
     private val accelerometerFlow = MutableSharedFlow<AccelerometerData>()
     private val gyroscopeFlow = MutableSharedFlow<GyroscopeData>()
     private val magnetometerFlow = MutableSharedFlow<MagnetometerData>()
 
-    // Constantes para configuração de sensores
     private val samplingPeriodUs = TimeUnit.MILLISECONDS.toMicros(50) // 50ms
     private val throttleIntervalMs = 100L // 100ms
 
-    /**
-     * Registra o sensor de acelerômetro e configura o fluxo de dados
-     */
     @OptIn(FlowPreview::class)
     fun setupAccelerometer(listener: SensorDataListener<AccelerometerData>) {
         val accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
@@ -62,7 +57,6 @@ class SensorHandler(private val activity: AppCompatActivity) {
 
             Log.d("SensorHandler", "Accelerometer registered with ${samplingPeriodUs}μs sampling")
 
-            // Configura o flow para emitir dados com regulagem (throttling)
             coroutineScope.launch {
                 accelerometerFlow.sample(throttleIntervalMs)
                     .collect { data ->
@@ -74,9 +68,6 @@ class SensorHandler(private val activity: AppCompatActivity) {
         }
     }
 
-    /**
-     * Registra o sensor de giroscópio e configura o fluxo de dados
-     */
     @OptIn(FlowPreview::class)
     fun setupGyroscope(listener: SensorDataListener<GyroscopeData>) {
         val gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
@@ -102,7 +93,6 @@ class SensorHandler(private val activity: AppCompatActivity) {
 
             Log.d("SensorHandler", "Gyroscope registered with ${samplingPeriodUs}μs sampling")
 
-            // Configura o flow para emitir dados com regulagem (throttling)
             coroutineScope.launch {
                 gyroscopeFlow.sample(throttleIntervalMs)
                     .collect { data ->
@@ -139,7 +129,6 @@ class SensorHandler(private val activity: AppCompatActivity) {
 
             Log.d("SensorHandler", "Magnetometer registered with ${samplingPeriodUs}μs sampling")
 
-            // Configura o flow para emitir dados com regulagem (throttling)
             coroutineScope.launch {
                 magnetometerFlow.sample(throttleIntervalMs)
                     .collect { data ->
@@ -151,9 +140,6 @@ class SensorHandler(private val activity: AppCompatActivity) {
         }
     }
 
-    /**
-     * Cria um listener de eventos de sensor genérico
-     */
     private fun createSensorEventListener(onSensorChanged: (SensorEvent) -> Unit): SensorEventListener {
         return object : SensorEventListener {
             override fun onSensorChanged(event: SensorEvent?) {
@@ -166,9 +152,6 @@ class SensorHandler(private val activity: AppCompatActivity) {
         }
     }
 
-    /**
-     * Libera todos os recursos e cancela os listeners
-     */
     fun cleanup() {
         registeredSensors.values.forEach { listener ->
             sensorManager.unregisterListener(listener)
