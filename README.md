@@ -1,164 +1,337 @@
+# Pocket Experimental Physics - Android Application
+
+A mobile Android application for collecting and transmitting inertial sensor data via Bluetooth to a server for real-time visualization and analysis.
+
+## Features
+
+- **Real-time Sensor Data Collection**: Captures accelerometer, gyroscope, and magnetometer data
+- **Bluetooth Transmission**: Sends sensor data to Bluetooth server in real-time
+- **Multi-sensor Support**: Individual control for each sensor type
+- **Intuitive Interface**: Simple controls for connection and data transmission
+- **Safety Warnings**: Built-in warnings for experimental use scenarios
+- **Bilingual Support**: English and Portuguese interface
+
+## System Requirements
+
+### Software Requirements
+- Android Studio Narwhal (2025.1.1) or later
+- JDK 11 or higher
+- Gradle 8.11.1
+- Kotlin 1.9.0
+- Git 2.30 or higher
+- OS: Windows 10+, macOS 10.14+, or Linux Ubuntu 18.04+
+
+### Android Device Requirements
+- Android 12 (API Level 31) or higher
+- Bluetooth 4.0 or higher
+- Inertial sensors (accelerometer, gyroscope, magnetometer)
+
+## Installation
+
+### Android Studio Setup
+
+1. **Download Android Studio**
+   - Visit https://developer.android.com/studio
+   - Download the latest version
+   - Install with default settings including:
+     - Android SDK
+     - Android SDK Platform
+     - Android Virtual Device (AVD)
+     - Performance (Intel HAXM) for Intel processors
+
+2. **Initial Configuration**
+   - Complete setup wizard on first launch
+   - Allow automatic SDK download and configuration
+   - Verify Android SDK API Level 31+ is installed via Tools → SDK Manager
+
+### Project Setup
+
+1. **Clone Repository**
+   ```bash
+   git clone <repository-url>
+   cd pocket-experimental-physics-android
+   ```
+
+2. **Open in Android Studio**
+   - Launch Android Studio
+   - Select "Open an Existing Project"
+   - Navigate to project folder and select
+
+3. **Gradle Sync**
+   - Click "Sync Now" when prompted
+   - Wait for dependency download (may take several minutes)
+   - If sync fails, try: File → Invalidate Caches and Restart
+
+## Device Setup for Development
+
+### Enable Developer Mode
+1. Go to Settings → About Phone
+2. Tap "Build number" 7 times
+3. Developer options will be enabled
+
+### Enable USB Debugging
+1. Go to Settings → Developer Options
+2. Enable "USB Debugging"
+3. Enable "Stay awake" (recommended)
+4. Enable "Install via USB"
+
+### Connect Device
+- **USB**: Connect via USB cable, allow debugging when prompted
+- **Wireless**: Enable "Wireless debugging" in Developer Options, pair via Android Studio Device Manager
+
+## Building and Running
+
+1. **Select Device**
+   - Choose connected device from toolbar dropdown
+   - Verify device appears in available devices list
+
+2. **Build and Install**
+   - Click Run button (green play icon) or press Shift+F10
+   - Grant permissions when prompted:
+     - Bluetooth access
+     - Location access (required for Bluetooth on Android 12+)
+     - Sensor access
+
+3. **First Run**
+   - App will request necessary permissions
+   - Grant all permissions for full functionality
+
+## Usage
+
+1. **Server Connection**
+   - Ensure Bluetooth server is running on computer
+   - Tap "Connect" to search for available devices
+   - Select server from list when prompted
+
+2. **Sensor Configuration**
+   - Use switches to enable/disable sensors:
+     - Accelerometer (enabled by default)
+     - Gyroscope (disabled by default)
+     - Magnetometer (disabled by default)
+
+3. **Data Transmission**
+   - After connection, tap "Start Transmission"
+   - Sensor data will stream to server in real-time
+   - Tap "Stop Transmission" to pause data flow
+   - Access web interface to visualize data
+
+## Project Structure
+
+```
+app/src/main/java/br/usp/poli/pocketexperimentalphysics/
+├── MainActivity.kt                    # Main application activity
+├── connection/
+│   └── BluetoothConnectionManager.kt  # Bluetooth communication handler
+├── sensors/
+│   ├── SensorHandler.kt              # Sensor management and data collection
+│   ├── SensorData.kt                 # Abstract sensor data class
+│   ├── AccelerometerData.kt          # Accelerometer data model
+│   ├── GyroscopeData.kt              # Gyroscope data model
+│   ├── MagnetometerData.kt           # Magnetometer data model
+│   └── interfaces/
+│       └── SensorDataListener.kt     # Sensor data callback interface
+└── ui/theme/                         # UI theme and styling
+```
+
+## Data Format
+
+Sensor data is transmitted as JSON:
+```json
+{
+  "type": "accelerometer",
+  "x": 0.123,
+  "y": -0.456,
+  "z": 9.789
+}
+```
+
+## Troubleshooting
+
+**Connection Issues**
+- Verify Bluetooth is enabled
+- Check server is running and discoverable
+- Ensure devices are in close proximity
+- Try restarting Bluetooth on both devices
+
+**Build Issues**
+- Clean and rebuild project: Build → Clean → Rebuild
+- Invalidate caches: File → Invalidate Caches and Restart
+- Check internet connection for dependency downloads
+
+**Permission Issues**
+- Manually grant permissions in device Settings → Apps → Pocket Experimental Physics
+- For Android 12+, location permission is required for Bluetooth functionality
+
+## Safety Warning
+
+⚠️ **IMPORTANT**: We do not take responsibility for any damage to your device caused by experimental use. Avoid exposure to strong magnetic fields, extreme temperatures, or physical impacts that may harm your phone's sensors or functionality. Use at your own risk.
+
+---
+
 # Pocket Experimental Physics - Aplicativo Android
 
-## Visão Geral
+Um aplicativo móvel Android para coleta e transmissão de dados de sensores inerciais via Bluetooth para um servidor para visualização e análise em tempo real.
 
-O Pocket Experimental Physics é um aplicativo Android desenvolvido para coleta e transmissão de dados de sensores inerciais via Bluetooth. O aplicativo permite a captura de dados do acelerômetro, giroscópio e magnetômetro do dispositivo móvel, transmitindo essas informações para um servidor Bluetooth para análise posterior.
+## Funcionalidades
+
+- **Coleta de Dados de Sensores em Tempo Real**: Captura dados do acelerômetro, giroscópio e magnetômetro
+- **Transmissão Bluetooth**: Envia dados dos sensores para servidor Bluetooth em tempo real
+- **Suporte Multi-sensores**: Controle individual para cada tipo de sensor
+- **Interface Intuitiva**: Controles simples para conexão e transmissão de dados
+- **Avisos de Segurança**: Avisos integrados para cenários de uso experimental
+- **Suporte Bilíngue**: Interface em inglês e português
 
 ## Requisitos do Sistema
 
 ### Requisitos de Software
-- Android Studio Narwhal (2025.1.1) ou versão mais recente
+- Android Studio Narwhal (2025.1.1) ou superior
 - JDK 11 ou superior
 - Gradle 8.11.1
 - Kotlin 1.9.0
 - Git 2.30 ou superior
-- Sistema operacional: Windows 10+, macOS 10.14+, ou Linux Ubuntu 18.04+
+- SO: Windows 10+, macOS 10.14+, ou Linux Ubuntu 18.04+
 
 ### Requisitos do Dispositivo Android
 - Android 12 (API Level 31) ou superior
 - Bluetooth 4.0 ou superior
 - Sensores inerciais (acelerômetro, giroscópio, magnetômetro)
 
-## Instalação do Android Studio
+## Instalação
 
-### Download e Instalação
+### Configuração do Android Studio
 
-Acesse o site oficial do Android Studio em https://developer.android.com/studio para fazer o download da versão mais recente. Execute o instalador e siga as instruções padrão de instalação, certificando-se de que os seguintes componentes estejam selecionados durante o processo:
+1. **Download do Android Studio**
+   - Acesse https://developer.android.com/studio
+   - Baixe a versão mais recente
+   - Instale com configurações padrão incluindo:
+     - Android SDK
+     - Android SDK Platform
+     - Android Virtual Device (AVD)
+     - Performance (Intel HAXM) para processadores Intel
 
-- Android SDK
-- Android SDK Platform
-- Android Virtual Device (AVD)
-- Performance (Intel HAXM) - apenas para Windows/Linux com processador Intel
+2. **Configuração Inicial**
+   - Complete o assistente de configuração na primeira inicialização
+   - Permita download e configuração automática do SDK
+   - Verifique se Android SDK API Level 31+ está instalado via Tools → SDK Manager
 
-### Configuração Inicial
+### Configuração do Projeto
 
-Após a primeira inicialização do Android Studio, complete o assistente de configuração inicial e permita que o programa baixe e configure o SDK do Android automaticamente. Verifique se o SDK do Android API Level 31 ou superior está instalado através do menu Tools → SDK Manager → Android SDK → SDK Platforms.
+1. **Clonar Repositório**
+   ```bash
+   git clone <repository-url>
+   cd pocket-experimental-physics-android
+   ```
 
-## Clonagem do Projeto via Android Studio
+2. **Abrir no Android Studio**
+   - Inicie o Android Studio
+   - Selecione "Open an Existing Project"
+   - Navegue até a pasta do projeto e selecione
 
-### Método Recomendado: Clonagem Direta no Android Studio
+3. **Sincronização do Gradle**
+   - Clique em "Sync Now" quando solicitado
+   - Aguarde o download das dependências (pode levar vários minutos)
+   - Se a sincronização falhar, tente: File → Invalidate Caches and Restart
 
-Na tela inicial do Android Studio, selecione a opção "Get from VCS" (Version Control System). Na janela que se abrir, insira a URL do repositório Git do projeto. Escolha o diretório de destino onde deseja salvar o projeto localmente e clique em "Clone". O Android Studio automaticamente detectará que se trata de um projeto Android e iniciará a configuração necessária.
+## Configuração do Dispositivo para Desenvolvimento
 
-### Configuração do Git (Primeira Vez)
+### Habilitar Modo Desenvolvedor
+1. Vá para Configurações → Sobre o Telefone
+2. Toque em "Número da versão" 7 vezes
+3. Opções do desenvolvedor serão habilitadas
 
-Caso seja a primeira vez utilizando o Git no sistema, configure suas credenciais através do menu File → Settings → Version Control → Git. Insira seu nome de usuário e email institucional da USP para identificação nos commits.
+### Habilitar Depuração USB
+1. Vá para Configurações → Opções do Desenvolvedor
+2. Habilite "Depuração USB"
+3. Habilite "Permanecer ativo" (recomendado)
+4. Habilite "Instalação via USB"
 
-## Sincronização do Gradle
+### Conectar Dispositivo
+- **USB**: Conecte via cabo USB, permita depuração quando solicitado
+- **Sem fio**: Habilite "Depuração wireless" em Opções do Desenvolvedor, pareie via Device Manager do Android Studio
 
-### Processo de Sincronização
+## Compilação e Execução
 
-Após a clonagem do projeto, o Android Studio automaticamente detectará os arquivos de configuração do Gradle e exibirá uma notificação solicitando a sincronização. Clique em "Sync Now" na barra de notificação que aparece no topo da tela. Este processo pode levar alguns minutos na primeira execução, pois o sistema precisará baixar todas as dependências do projeto.
+1. **Selecionar Dispositivo**
+   - Escolha dispositivo conectado no dropdown da barra de ferramentas
+   - Verifique se o dispositivo aparece na lista de dispositivos disponíveis
 
-### Sincronização Manual
+2. **Compilar e Instalar**
+   - Clique no botão Run (ícone play verde) ou pressione Shift+F10
+   - Conceda permissões quando solicitado:
+     - Acesso Bluetooth
+     - Acesso à localização (necessário para Bluetooth no Android 12+)
+     - Acesso aos sensores
 
-Caso a sincronização automática não ocorra, acesse o menu File → Sync Project with Gradle Files ou clique no ícone de sincronização do Gradle na barra de ferramentas. Aguarde a conclusão do processo e verifique se não há erros na aba "Build" na parte inferior da tela.
+3. **Primeira Execução**
+   - O app solicitará as permissões necessárias
+   - Conceda todas as permissões para funcionalidade completa
 
-### Resolução de Problemas de Sincronização
+## Uso
 
-Se a sincronização falhar, verifique sua conexão com a internet e execute uma limpeza do projeto através do menu Build → Clean Project, seguido de Build → Rebuild Project. Em casos persistentes, acesse File → Invalidate Caches and Restart para limpar os caches do Android Studio.
+1. **Conexão com Servidor**
+   - Certifique-se de que o servidor Bluetooth está rodando no computador
+   - Toque em "Connect" para buscar dispositivos disponíveis
+   - Selecione o servidor da lista quando solicitado
 
-## Configuração do Dispositivo Android para Debug
+2. **Configuração de Sensores**
+   - Use os switches para habilitar/desabilitar sensores:
+     - Acelerômetro (habilitado por padrão)
+     - Giroscópio (desabilitado por padrão)
+     - Magnetômetro (desabilitado por padrão)
 
-### Habilitação do Modo Desenvolvedor
-
-Acesse as Configurações do dispositivo Android e navegue até "Sobre o telefone" ou "Sobre o dispositivo". Localize a opção "Número da versão" ou "Build number" e toque sete vezes consecutivas neste campo. Uma mensagem confirmará que o modo desenvolvedor foi ativado.
-
-### Configuração da Depuração USB
-
-Retorne ao menu principal de Configurações e procure por "Opções do desenvolvedor" ou "Developer options". Ative a opção "Depuração USB" ou "USB Debugging" e confirme a ativação quando solicitado pelo sistema.
-
-### Configuração de Permissões Adicionais
-
-Nas Opções do desenvolvedor, ative também as seguintes configurações para garantir o funcionamento adequado durante o desenvolvimento:
-
-- "Permanecer ativo" ou "Stay awake" para evitar que a tela desligue durante o debug
-- "Permitir instalação via USB" para permitir a instalação de aplicativos via Android Studio
-
-## Conexão do Dispositivo para Debug
-
-### Conexão via USB
-
-Conecte o dispositivo Android ao computador utilizando um cabo USB compatível. No dispositivo, uma notificação sobre "Depuração USB" deve aparecer automaticamente. Toque em "Permitir" ou "Allow" quando esta notificação for exibida. No Android Studio, o dispositivo deve aparecer automaticamente na lista de dispositivos disponíveis na barra de ferramentas.
-
-### Conexão via Wi-Fi
-
-Para utilizar debug wireless, certifique-se de que tanto o dispositivo quanto o computador estejam conectados à mesma rede Wi-Fi. No dispositivo, acesse Opções do desenvolvedor e ative "Depuração wireless" ou "Wireless debugging".
-
-No Android Studio, acesse o menu Tools → Connection Assistant ou utilize o Device Manager. Selecione a opção "Pair using Wi-Fi" e siga as instruções apresentadas na tela. Será necessário inserir um código de pareamento que aparecerá no dispositivo Android.
-
-### Verificação da Conexão
-
-Após estabelecer a conexão (USB ou Wi-Fi), verifique se o dispositivo aparece corretamente na lista de dispositivos disponíveis na barra de ferramentas do Android Studio. O nome do dispositivo deve ser exibido junto com o nível da API do Android instalado.
-
-## Compilação e Execução do Projeto
-
-### Primeira Compilação
-
-Selecione o dispositivo conectado na lista de dispositivos disponíveis na barra de ferramentas do Android Studio. Clique no botão "Run" (ícone de play verde) ou utilize o atalho Shift+F10. O Android Studio iniciará o processo de compilação, que pode levar alguns minutos na primeira execução.
-
-### Instalação Automática
-
-Após a compilação bem-sucedida, o aplicativo será automaticamente instalado no dispositivo conectado e executado. Na primeira execução, o aplicativo solicitará as permissões necessárias para acesso aos sensores e Bluetooth.
-
-### Permissões Necessárias
-
-O aplicativo requer as seguintes permissões para funcionamento adequado:
-
-- Acesso ao Bluetooth para comunicação com o servidor
-- Acesso aos sensores do dispositivo para coleta de dados
-- Acesso à localização (requerido pelo Android 12+ para funcionalidades Bluetooth)
-
-Conceda todas as permissões solicitadas para garantir o funcionamento completo da aplicação.
+3. **Transmissão de Dados**
+   - Após conexão, toque em "Start Transmission"
+   - Dados dos sensores serão transmitidos para o servidor em tempo real
+   - Toque em "Stop Transmission" para pausar o fluxo de dados
+   - Acesse a interface web para visualizar os dados
 
 ## Estrutura do Projeto
 
 ```
-pocket-experimental-physics-android/
-├── app/
-│   ├── build.gradle.kts
-│   ├── proguard-rules.pro
-│   └── src/
-│       ├── main/
-│       │   ├── AndroidManifest.xml
-│       │   ├── java/br/usp/poli/pocketexperimentalphysics/
-│       │   │   ├── MainActivity.kt
-│       │   │   ├── connection/
-│       │   │   │   └── BluetoothConnectionManager.kt
-│       │   │   ├── sensors/
-│       │   │   │   ├── SensorHandler.kt
-│       │   │   │   ├── SensorData.kt
-│       │   │   │   ├── AccelerometerData.kt
-│       │   │   │   ├── GyroscopeData.kt
-│       │   │   │   ├── MagnetometerData.kt
-│       │   │   │   └── interfaces/
-│       │   │   │       └── SensorDataListener.kt
-│       │   │   └── ui/
-│       │   │       └── theme/
-│       │   │           ├── Color.kt
-│       │   │           ├── Theme.kt
-│       │   │           └── Type.kt
-│       │   └── res/
-│       │       ├── drawable/
-│       │       ├── layout/
-│       │       │   ├── activity_main.xml
-│       │       │   └── dialog_info.xml
-│       │       ├── mipmap-*/
-│       │       ├── values/
-│       │       │   ├── colors.xml
-│       │       │   ├── strings.xml
-│       │       │   └── themes.xml
-│       │       └── xml/
-│       ├── test/
-│       └── androidTest/
-├── gradle/
-│   └── wrapper/
-│       ├── gradle-wrapper.jar
-│       └── gradle-wrapper.properties
-├── build.gradle.kts
-├── gradle.properties
-├── settings.gradle.kts
-├── gradlew
-├── gradlew.bat
-└── README.md
+app/src/main/java/br/usp/poli/pocketexperimentalphysics/
+├── MainActivity.kt                    # Atividade principal da aplicação
+├── connection/
+│   └── BluetoothConnectionManager.kt  # Gerenciador de comunicação Bluetooth
+├── sensors/
+│   ├── SensorHandler.kt              # Gerenciamento e coleta de dados dos sensores
+│   ├── SensorData.kt                 # Classe abstrata de dados de sensor
+│   ├── AccelerometerData.kt          # Modelo de dados do acelerômetro
+│   ├── GyroscopeData.kt              # Modelo de dados do giroscópio
+│   ├── MagnetometerData.kt           # Modelo de dados do magnetômetro
+│   └── interfaces/
+│       └── SensorDataListener.kt     # Interface de callback de dados de sensor
+└── ui/theme/                         # Tema e estilização da UI
 ```
+
+## Formato de Dados
+
+Os dados dos sensores são transmitidos como JSON:
+```json
+{
+  "type": "accelerometer",
+  "x": 0.123,
+  "y": -0.456,
+  "z": 9.789
+}
+```
+
+## Solução de Problemas
+
+**Problemas de Conexão**
+- Verifique se o Bluetooth está habilitado
+- Confirme se o servidor está rodando e descobrível
+- Certifique-se de que os dispositivos estão próximos
+- Tente reiniciar o Bluetooth em ambos os dispositivos
+
+**Problemas de Compilação**
+- Limpe e recompile o projeto: Build → Clean → Rebuild
+- Invalide caches: File → Invalidate Caches and Restart
+- Verifique conexão com internet para download de dependências
+
+**Problemas de Permissão**
+- Conceda permissões manualmente em Configurações → Apps → Pocket Experimental Physics
+- Para Android 12+, permissão de localização é necessária para funcionalidade Bluetooth
+
+## Aviso de Segurança
+
+⚠️ **IMPORTANTE**: Não nos responsabilizamos por danos ao seu dispositivo causados por uso experimental. Evite exposição a campos magnéticos intensos, temperaturas extremas ou impactos físicos que possam prejudicar os sensores ou funcionalidade do telefone. Use por sua conta e risco.
